@@ -13,9 +13,11 @@ import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
 type BrandTargetData = {
   Brand: string;
+  DateTime: string;
+  DailySales: number;
   Target: number;
   TargetAchieved: number;
-  PercentageAchieved: string;
+  PercentageAchieved?: string;
 };
 
 async function fetchBrandTargetData() {
@@ -24,7 +26,7 @@ async function fetchBrandTargetData() {
     if (!res.ok) throw new Error("Failed to fetch brand target data");
     const data = await res.json();
     console.log("Fetched Brand Target Data:", data);
-    return data;
+    return data as BrandTargetData[];
   } catch (error) {
     console.error("Error fetching brand target data:", error);
     throw error;
@@ -42,7 +44,18 @@ export default function BrandTargetTable() {
     async function loadData() {
       try {
         const results = await fetchBrandTargetData();
-        setBrandTargetData(results);
+        console.log("Fetched Brand Target Data in useEffect:", results);
+
+        const latestUniqueBrands = Object.values(
+          results.reduce((acc, brand) => {
+            if (!acc[brand.Brand] || new Date(brand.DateTime) > new Date(acc[brand.Brand].DateTime)) {
+              acc[brand.Brand] = brand;
+            }
+            return acc;
+          }, {} as Record<string, BrandTargetData>)
+        );
+
+        setBrandTargetData(latestUniqueBrands);
       } catch (err) {
         setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
@@ -56,13 +69,18 @@ export default function BrandTargetTable() {
   if (error) return <div className="text-red-500">{error}</div>;
   if (!brandTargetData.length) return <div className="text-red-500">No brand target data available</div>;
 
-  // Get top 5 brands by Target Achieved
+  const totalDailySales = brandTargetData.reduce((acc, brand) => acc + brand.DailySales, 0);
+
+  // Get top performing brands based on latest DailySales
   const topBrands = [...brandTargetData]
-    .sort((a, b) => b.TargetAchieved - a.TargetAchieved)
+    .sort((a, b) => b.DailySales - a.DailySales)
     .slice(0, 5);
 
   return (
     <div className="p-5">
+      <div className="mt-4 p-4 bg-gray-100 rounded-lg">
+        <h2 className="text-lg font-bold">Total Daily Sales: INR {totalDailySales.toLocaleString()}</h2>
+      </div>
       <h1 className="text-xl font-bold mb-4">Brand Target Overview</h1>
       <Table>
         <TableHeader className="bg-gray-50">
@@ -83,8 +101,8 @@ export default function BrandTargetTable() {
             return (
               <TableRow key={brand.Brand}>
                 <TableCell>{brand.Brand}</TableCell>
-                <TableCell>{brand.Target}</TableCell>
-                <TableCell>{brand.TargetAchieved}</TableCell>
+                <TableCell>{brand.Target.toLocaleString()}</TableCell>
+                <TableCell>{brand.TargetAchieved.toLocaleString()}</TableCell>
                 <TableCell>{brand.PercentageAchieved}</TableCell>
                 <TableCell>
                   <div className="w-32 h-32">
@@ -115,19 +133,19 @@ export default function BrandTargetTable() {
         </TableBody>
       </Table>
 
-      <h2 className="text-lg font-bold mt-6 mb-4">Top 5 Brands by Target Achieved</h2>
+      <h2 className="text-lg font-bold mt-6">Top Performing Brands (Daily Sales)</h2>
       <Table>
         <TableHeader className="bg-gray-50">
           <TableRow>
             <TableHead>Brand</TableHead>
-            <TableHead>Target Achieved</TableHead>
+            <TableHead>Daily Sales</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {topBrands.map((brand) => (
             <TableRow key={brand.Brand}>
               <TableCell>{brand.Brand}</TableCell>
-              <TableCell>{brand.TargetAchieved}</TableCell>
+              <TableCell>{brand.DailySales.toLocaleString()}</TableCell>
             </TableRow>
           ))}
         </TableBody>

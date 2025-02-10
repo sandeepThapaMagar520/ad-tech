@@ -10,6 +10,7 @@ import {
   TableRow,
 } from "@/app/components/ui/table";
 
+
 // Define the type for ASIN data
 type AsinData = {
   SN: string;
@@ -26,6 +27,7 @@ type AsinData = {
   adGroupId: string;
   campaignId: string;
 };
+
 
 // Define the type for Keyword data
 type KeywordData = {
@@ -226,7 +228,7 @@ export default function AdGroupPage({ params }: { params: Promise<{ campaign_id:
               <TableCell>{keyword.matchTypes.join(", ")}</TableCell>
               <TableCell>{keyword.rank}</TableCell>
               <TableCell>{keyword.theme}</TableCell>
-              <TableCell>{keyword.bids.join(", ")}</TableCell>
+              <TableCell>{keyword.bids.join("  | ")}</TableCell>
             </TableRow>
           ))}
         </TableBody>
