@@ -17,5 +17,72 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: sans-serif;
+  background-color: #212830;
+  color: white;
+  margin: 0;
+  padding: 0;
+}
+
+table {
+  border-radius: 12px; /* Apply rounding to the table's outer corners */
+  overflow: hidden;    /* Prevent border radius from being cut off */
+  width: 100%;
+  border-collapse: collapse; /* Ensure no spacing between borders */
+  border: 1px solid #ddd; /* Add a light border around the table */
+}
+
+table th:first-child,
+table td:first-child {
+  border-top-left-radius: 12px; /* Round top-left corner */
+}
+
+table th:last-child,
+table td:last-child {
+  border-top-right-radius: 12px; /* Round top-right corner */
+}
+
+table tr:last-child td:first-child {
+  border-bottom-left-radius: 12px; /* Round bottom-left corner */
+}
+
+table tr:last-child td:last-child {
+  border-bottom-right-radius: 12px; /* Round bottom-right corner */
+}
+
+/* Add borders to table cells */
+table th,
+table td {
+  padding: 12px;
+  border: 1px solid #ddd; /* Border between each cell */
+}
+
+/* Optional: Add some padding to the body for aesthetics */
+body {
+  background-color: #212830;
+  color: white;
+}
+
+/* Customize the table header */
+table th {
+  background-color: #333;
+  color: #fff;
+  text-align: left;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+table td {
+  background-color: #2a2f37; /* Dark background for table rows */
+  color: white;
+  font-size: 12px;
+}
+
+/* Optional: Add hover effects for rows */
+table tr:hover {
+  background-color: #444; /* Slightly lighter background on hover */
+}
+
+table tr:nth-child(even) {
+  background-color: #333; /* Alternate row color for better readability */
 }

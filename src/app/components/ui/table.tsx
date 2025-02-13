@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import "@/css/global.css";
 
 interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
   wrapperClass?: string;
@@ -10,7 +11,7 @@ const Table = React.forwardRef<HTMLTableElement, TableProps>(
     <div className={cn("overflow-x-auto", wrapperClass)}>
       <table
         ref={ref}
-        className={cn("w-full caption-top text-sm", className)}
+        className={cn("w-full caption-top text-sm rounded-lg border border-default-300", className)} // Add border and rounded-lg here
         {...props}
       />
     </div>
@@ -56,7 +57,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
     <tr
       ref={ref}
       className={cn(
-        "border-b border-default-300 transition-colors data-[state=selected]:bg-muted",
+        "border-b border-default-300 transition-colors data-[state=selected]:bg-muted rounded-lg", // Added rounded-lg here
         className
       )}
       {...props}
@@ -72,7 +73,7 @@ const TableHead = React.forwardRef<HTMLTableHeaderCellElement, TableHeadProps>(
     <th
       ref={ref}
       className={cn(
-        "h-14 px-4 ltr:text-left rtl:text-right ltr:last:text-right rtl:last:text-left align-middle font-semibold text-sm text-default-800 capitalize ltr:[&:has([role=checkbox])]:pr-0 rtl:[&:has([role=checkbox])]:pl-0",
+        "h-14 px-4 ltr:text-left rtl:text-right ltr:last:text-right rtl:last:text-left align-middle font-semibold text-sm text-default-800 capitalize rounded-t-lg", // Add rounded-t-lg for top rounded corners
         className
       )}
       {...props}
@@ -88,7 +89,7 @@ const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
     <td
       ref={ref}
       className={cn(
-        "p-4 align-middle text-sm text-default-600 last:text-right rtl:last:text-left font-normal ltr:[&:has([role=checkbox])]:pr-0 rtl:[&:has([role=checkbox])]:pl-0",
+        "p-4 align-middle text-sm text-default-600 last:text-right rtl:last:text-left font-normal rounded-lg", // Added rounded-lg here
         className
       )}
       {...props}
