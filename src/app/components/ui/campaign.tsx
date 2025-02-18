@@ -8,9 +8,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/app/components/ui/table";
+} from "@/app/components/ui/table";  // Importing Table components
 import DateRangePicker from "./datePicker";
-import Header from "./header";
 
 type CampaignData = {
   SN: string;
@@ -91,32 +90,32 @@ export default function PerformanceTable() {
       />
 
       <div className="overflow-x-auto max-h-96 p-5">
-        <Table className="border border-default-100 rounded-lg">
-          <TableHeader className="bg-black text-white  top-0 z-10">
+        <Table className="">
+          <TableHeader >
             <TableRow>
-              <TableHead className="border border-default-300 text-center rounded-tl-lg">SN</TableHead>
-              <TableHead className="border border-default-300 text-center">Campaign</TableHead>
-              <TableHead className="border border-default-300 text-center">Campaign Type</TableHead>
-              <TableHead className="border border-default-300 text-center">Sales</TableHead>
-              <TableHead className="border border-default-300 text-center">Goal</TableHead>
-              <TableHead className="border border-default-300 text-center">Spend</TableHead>
-              <TableHead className="border border-default-300 text-center">Progress</TableHead>
+              <TableHead className="text-center">SN</TableHead>
+              <TableHead className="text-center">Campaign</TableHead>
+              <TableHead className="text-center">Campaign Type</TableHead>
+              <TableHead className="text-center">Sales</TableHead>
+              <TableHead className="text-center">Goal</TableHead>
+              <TableHead className="text-center">Spend</TableHead>
+              <TableHead className="text-center">Progress</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="bg-[#212830] text-white">
             {campaignData.map((campaign) => (
               <TableRow key={campaign.SN} className="text-center">
-                <TableCell className="border border-default-300 rounded-l-lg">{campaign.SN}</TableCell>
-                <TableCell className="border border-default-300">
+                <TableCell className="rounded-l-lg">{campaign.SN}</TableCell>
+                <TableCell>
                   <Link href={`/ad_details/${campaign.campaignId}`}>
                     {campaign.campaignName}
                   </Link>
                 </TableCell>
-                <TableCell className="border border-default-300">SP</TableCell>
-                <TableCell className="border border-default-300">{campaign.sales1d}</TableCell>
-                <TableCell className="border border-default-300">10000</TableCell>
-                <TableCell className="border border-default-300">200</TableCell>
-                <TableCell className="border border-default-300">32%</TableCell>
+                <TableCell>SP</TableCell>
+                <TableCell>{campaign.sales1d}</TableCell>
+                <TableCell>10000</TableCell>
+                <TableCell>200</TableCell>
+                <TableCell>32%</TableCell>
               </TableRow>
             ))}
           </TableBody>

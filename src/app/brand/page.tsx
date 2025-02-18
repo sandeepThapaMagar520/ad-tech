@@ -146,7 +146,14 @@ export default function BrandTargetTables() {
             setEndDate={setEndDate}
           />
         </div>
-
+        <div className="flex justify-center items-center">
+            <div className="flex-0.6 text-center">
+              <BasicRadialBar
+                height={350}
+                series={[Math.round((totalTargetAchieved / totalTarget) * 100)]}
+              />
+            </div>
+          </div>
         {/* Layout for tables and pie chart */}
         <div className="flex space-x-10 p-6">
           {/* Brand Table */}
@@ -155,8 +162,8 @@ export default function BrandTargetTables() {
               <TableHeader className="bg-black text-white  top-0 z-10">
                 <TableRow>
                   <TableHead>Brand</TableHead>
-                  <TableHead>Target</TableHead>
-                  <TableHead>Target Achieved</TableHead>
+                  <TableHead>Goal</TableHead>
+                  <TableHead>Sales Achieved</TableHead>
                   <TableHead>Progress</TableHead>
                 </TableRow>
               </TableHeader>
@@ -178,12 +185,8 @@ export default function BrandTargetTables() {
             </Table>
           </div>
 
-          <div className="flex-1 text-center">
-            <BasicRadialBar
-              height={350}
-              series={[Math.round((totalTargetAchieved / totalTarget) * 100)]} 
-            />
-          </div>
+          
+
         </div>
       </div>
 

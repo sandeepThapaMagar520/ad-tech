@@ -29,9 +29,7 @@ const DateRangePicker = ({
           className="flex items-center gap-2 rounded-lg border-2 border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           <Calendar className="h-4 w-4" />
-          <span>
             {startDate ? startDate.toLocaleString() : "Start Date & Time"}
-          </span>
         </button>
         {startOpen && (
           <div className="absolute left-0 z-10 mt-2 flex bg-white p-2 shadow-lg border rounded-md">
@@ -65,9 +63,8 @@ const DateRangePicker = ({
           className="flex items-center gap-2 rounded-lg border-2 border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           <Calendar className="h-4 w-4" />
-          <span>
             {endDate ? endDate.toLocaleString() : "End Date & Time"}
-          </span>
+         
         </button>
         {endOpen && (
           <div className="absolute left-0 z-10 mt-2 flex bg-white p-2 shadow-lg border rounded-md">

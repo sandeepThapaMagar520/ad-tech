@@ -21,22 +21,25 @@ const BasicRadialBar = ({ height = 350, series }: BasicRadialBarProps) => {
     },
     stroke: {
       curve: "smooth" as "smooth",
-      width: 8,
+      width: 10,
     },
     plotOptions: {
       radialBar: {
-        hollow: { size: "80%" },
+        hollow: { size: "50%" },
         dataLabels: {
+          name: {
+            color: theme === "dark" ? "#FFF" : "#FFF", // Label color dynamically set
+          },
           value: {
             fontSize: "18px",
             fontWeight: 700,
-            color: theme === "dark" ? "#FFF" : "#000",
+            color: theme === "dark" ? "#FFF" : "#FFF",
           },
         },
       },
     },
-    colors: [theme === "dark" ? "#A020F0" : "#A020F0"], // Green for dark theme, Orange for light
-    labels: ["Progress"], // Custom label for the radial bar
+    colors: ["#800080"],
+    labels: ["Total sales"],
   };
 
   return (

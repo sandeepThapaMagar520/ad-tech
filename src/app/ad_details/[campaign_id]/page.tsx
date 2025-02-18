@@ -111,7 +111,7 @@ export default function PerformanceTable() {
             {campaignData.map((campaign) => (
               <TableRow key={campaign.SN} className="text-center">
                 <TableCell className="border border-default-300">
-                  <Link href={`/adGroupDetails/${campaign.campaignId}/${campaign.adGroupId}/recommendation`} className="text-blue-600 hover:text-blue-800 hover:underline">
+                  <Link href={`/adGroupDetails/${campaign.campaignId}/${campaign.adGroupId}/`} className="text-blue-600 hover:text-blue-800 hover:underline">
                     {campaign.adGroupName}
                   </Link>
                 </TableCell>

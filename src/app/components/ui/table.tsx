@@ -1,18 +1,19 @@
 import * as React from "react";
-import { cn } from "@/lib/utils"; // Assuming you have a utility for handling class names
-import Link from "next/link"; // Assuming you're using Next.js for routing
+import { cn } from "@/lib/utils"; 
+import Link from "next/link"; 
 
 interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
   wrapperClass?: string;
 }
 
-const Table = React.forwardRef<HTMLTableElement, TableProps>(
+const Table = React.forwardRef<HTMLTableElement, TableProps>( // Table component
   ({ className, wrapperClass, ...props }, ref) => (
     <div className={cn("overflow-x-auto", wrapperClass)}>
       <table
         ref={ref}
         className={cn(
-          "w-full caption-top text-sm rounded-lg border border-default-300",
+          "w-full caption-top text-sm border border-gray-300", // Border added
+          "rounded-t-lg",
           className
         )}
         {...props}
@@ -31,7 +32,7 @@ const TableHeader = React.forwardRef<HTMLTableSectionElement, TableSectionProps>
 );
 TableHeader.displayName = "TableHeader";
 
-const TableBody = React.forwardRef<HTMLTableSectionElement, TableSectionProps>(
+const TableBody = React.forwardRef<HTMLTableSectionElement, TableSectionProps>( 
   ({ className, ...props }, ref) => (
     <tbody
       ref={ref}
@@ -42,7 +43,7 @@ const TableBody = React.forwardRef<HTMLTableSectionElement, TableSectionProps>(
 );
 TableBody.displayName = "TableBody";
 
-const TableFooter = React.forwardRef<HTMLTableSectionElement, TableSectionProps>(
+const TableFooter = React.forwardRef<HTMLTableSectionElement, TableSectionProps>( // Table Footer component
   ({ className, ...props }, ref) => (
     <tfoot
       ref={ref}
@@ -55,12 +56,12 @@ TableFooter.displayName = "TableFooter";
 
 interface TableRowProps extends React.HTMLAttributes<HTMLTableRowElement> {}
 
-const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
+const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>( // Table Row component
   ({ className, ...props }, ref) => (
     <tr
       ref={ref}
       className={cn(
-        "border-b border-default-300 transition-colors data-[state=selected]:bg-muted rounded-lg",
+        "border-b border-gray-300 transition-colors data-[state=selected]:bg-muted", // Border applied here
         className
       )}
       {...props}
@@ -71,12 +72,12 @@ TableRow.displayName = "TableRow";
 
 interface TableHeadProps extends React.ThHTMLAttributes<HTMLTableHeaderCellElement> {}
 
-const TableHead = React.forwardRef<HTMLTableHeaderCellElement, TableHeadProps>(
+const TableHead = React.forwardRef<HTMLTableHeaderCellElement, TableHeadProps>( // Table Header Cell component
   ({ className, ...props }, ref) => (
     <th
       ref={ref}
       className={cn(
-        "h-14 px-4 text-center align-middle font-semibold text-sm text-default-800 capitalize rounded-t-lg", // Centered header text
+        "h-14 px-4 text-center align-middle font-semibold text-sm text-default-800 capitalize rounded-t-lg border-b border-gray-300", // Border applied
         className
       )}
       {...props}
@@ -91,13 +92,13 @@ interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
   onClick?: () => void; // Optional prop for custom click handling
 }
 
-const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
+const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>( // Table Cell component
   ({ className, href, onClick, children, ...props }, ref) => {
     const content = (
       <td
         ref={ref}
         className={cn(
-          "p-4 align-middle text-sm text-default-600 last:text-right rtl:last:text-left font-normal rounded-lg",
+          "p-4 align-middle text-sm text-default-600 last:text-right rtl:last:text-left font-normal border-b border-gray-300", // Border applied
           className
         )}
         {...props}
@@ -121,7 +122,7 @@ const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
         <td
           ref={ref}
           className={cn(
-            "p-4 align-middle text-sm text-default-600 last:text-right rtl:last:text-left font-normal rounded-lg cursor-pointer",
+            "p-4 align-middle text-sm text-default-600 last:text-right rtl:last:text-left font-normal cursor-pointer border-b border-gray-300", // Border applied
             className
           )}
           onClick={onClick}
@@ -140,7 +141,7 @@ TableCell.displayName = "TableCell";
 
 interface TableCaptionProps extends React.HTMLAttributes<HTMLTableCaptionElement> {}
 
-const TableCaption = React.forwardRef<HTMLTableCaptionElement, TableCaptionProps>(
+const TableCaption = React.forwardRef<HTMLTableCaptionElement, TableCaptionProps>( // Table Caption component
   ({ className, ...props }, ref) => (
     <caption
       ref={ref}
