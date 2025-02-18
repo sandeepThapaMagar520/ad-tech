@@ -1,6 +1,6 @@
 import * as React from "react";
-import { cn } from "@/lib/utils";
-import "@/css/global.css";
+import { cn } from "@/lib/utils"; // Assuming you have a utility for handling class names
+import Link from "next/link"; // Assuming you're using Next.js for routing
 
 interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
   wrapperClass?: string;
@@ -11,7 +11,10 @@ const Table = React.forwardRef<HTMLTableElement, TableProps>(
     <div className={cn("overflow-x-auto", wrapperClass)}>
       <table
         ref={ref}
-        className={cn("w-full caption-top text-sm rounded-lg border border-default-300", className)} // Add border and rounded-lg here
+        className={cn(
+          "w-full caption-top text-sm rounded-lg border border-default-300",
+          className
+        )}
         {...props}
       />
     </div>
@@ -57,7 +60,7 @@ const TableRow = React.forwardRef<HTMLTableRowElement, TableRowProps>(
     <tr
       ref={ref}
       className={cn(
-        "border-b border-default-300 transition-colors data-[state=selected]:bg-muted rounded-lg", // Added rounded-lg here
+        "border-b border-default-300 transition-colors data-[state=selected]:bg-muted rounded-lg",
         className
       )}
       {...props}
@@ -73,7 +76,7 @@ const TableHead = React.forwardRef<HTMLTableHeaderCellElement, TableHeadProps>(
     <th
       ref={ref}
       className={cn(
-        "h-14 px-4 ltr:text-left rtl:text-right ltr:last:text-right rtl:last:text-left align-middle font-semibold text-sm text-default-800 capitalize rounded-t-lg", // Add rounded-t-lg for top rounded corners
+        "h-14 px-4 text-center align-middle font-semibold text-sm text-default-800 capitalize rounded-t-lg", // Centered header text
         className
       )}
       {...props}
@@ -82,20 +85,57 @@ const TableHead = React.forwardRef<HTMLTableHeaderCellElement, TableHeadProps>(
 );
 TableHead.displayName = "TableHead";
 
-interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {}
+// Corrected TableCell to support href or onClick
+interface TableCellProps extends React.TdHTMLAttributes<HTMLTableCellElement> {
+  href?: string; // Optional prop for link navigation
+  onClick?: () => void; // Optional prop for custom click handling
+}
 
 const TableCell = React.forwardRef<HTMLTableCellElement, TableCellProps>(
-  ({ className, ...props }, ref) => (
-    <td
-      ref={ref}
-      className={cn(
-        "p-4 align-middle text-sm text-default-600 last:text-right rtl:last:text-left font-normal rounded-lg", // Added rounded-lg here
-        className
-      )}
-      {...props}
-    />
-  )
+  ({ className, href, onClick, children, ...props }, ref) => {
+    const content = (
+      <td
+        ref={ref}
+        className={cn(
+          "p-4 align-middle text-sm text-default-600 last:text-right rtl:last:text-left font-normal rounded-lg",
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </td>
+    );
+
+    // If href is provided, wrap with Link for navigation
+    if (href) {
+      return (
+        <Link href={href} passHref>
+          {content} {/* Link automatically wraps with <a> tag */}
+        </Link>
+      );
+    }
+
+    // If onClick is provided, wrap the content in a clickable cell
+    if (onClick) {
+      return (
+        <td
+          ref={ref}
+          className={cn(
+            "p-4 align-middle text-sm text-default-600 last:text-right rtl:last:text-left font-normal rounded-lg cursor-pointer",
+            className
+          )}
+          onClick={onClick}
+          {...props}
+        >
+          {children}
+        </td>
+      );
+    }
+
+    return content; // Default non-link behavior
+  }
 );
+
 TableCell.displayName = "TableCell";
 
 interface TableCaptionProps extends React.HTMLAttributes<HTMLTableCaptionElement> {}
@@ -104,10 +144,7 @@ const TableCaption = React.forwardRef<HTMLTableCaptionElement, TableCaptionProps
   ({ className, ...props }, ref) => (
     <caption
       ref={ref}
-      className={cn(
-        "mb-4 text-sm font-medium text-default-700 text-start",
-        className
-      )}
+      className={cn("mb-4 text-sm font-medium text-default-700 text-start", className)}
       {...props}
     />
   )

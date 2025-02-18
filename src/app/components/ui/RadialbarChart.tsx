@@ -2,21 +2,25 @@
 
 import { useTheme } from "next-themes";
 import dynamic from "next/dynamic";
-import { ApexOptions } from "apexcharts"; 
+import { ApexOptions } from "apexcharts";
 
+// Dynamically import the Chart component to prevent SSR issues
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-const BasicRadialBar = ({ height = 350 }) => {
-  const { theme = "light" } = useTheme(); // Default theme fallback
+interface BasicRadialBarProps {
+  height?: number;
+  series: number[];  // Expecting a series prop to be passed
+}
 
-  const series = [80];
+const BasicRadialBar = ({ height = 350, series }: BasicRadialBarProps) => {
+  const { theme = "light" } = useTheme(); // Default theme fallback
 
   const options: ApexOptions = {
     chart: {
       toolbar: { show: false },
     },
     stroke: {
-      curve: "smooth" as "smooth", 
+      curve: "smooth" as "smooth",
       width: 8,
     },
     plotOptions: {
@@ -31,14 +35,15 @@ const BasicRadialBar = ({ height = 350 }) => {
         },
       },
     },
-    colors: [theme === "dark" ? "#00C49F" : "#FF8042"],
-    labels: ["Cricket"],
+    colors: [theme === "dark" ? "#A020F0" : "#A020F0"], // Green for dark theme, Orange for light
+    labels: ["Progress"], // Custom label for the radial bar
   };
 
-  return <Chart options={options} series={series} type="radialBar" height={height} />;
+  return (
+    <div>
+      <Chart options={options} series={series} type="radialBar" height={height} />
+    </div>
+  );
 };
 
 export default BasicRadialBar;
-{/* <div className="w-20 h-20 flex justify-center items-center">
-                        <BasicRadialBar percentage={percentage} />
-                      </div> */}

@@ -2,87 +2,204 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+* {
+  padding: 0;
+  margin: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body.light {
+  --background: #ffffff;
+  --foreground: #171717;
+  --text-color: #000000;
+}
+
+body.dark {
+  --background: #2e2e2e;
+  --foreground: #1c1c1c;
+  --text-color: #ffffff;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  transition: background-color 0.3s, color 0.3s;
+  background-color: var(--background);
+  color: var(--text-color);
   font-family: sans-serif;
-  background-color: #212830;
-  color: white;
   margin: 0;
   padding: 0;
 }
 
 table {
-  border-radius: 12px; /* Apply rounding to the table's outer corners */
-  overflow: hidden;    /* Prevent border radius from being cut off */
+  border-radius: 12px;
+  overflow: hidden;
   width: 100%;
-  border-collapse: collapse; /* Ensure no spacing between borders */
-  border: 1px solid #ddd; /* Add a light border around the table */
+  border-collapse: collapse;
+  background-color: var(--background);
+  color: var(--text-color);
+  /* Apply default border */
+  border: 1px solid #ddd;
+}
+
+table th {
+  background-color: var(--foreground);
+  color: var(--background);
+}
+
+body.light table th {
+  background-color: #171717;
+  color: #ffffff;
+}
+
+body.dark table th {
+  background-color: #333333;
+  color: #ffffff;
+}
+
+table td {
+  background-color: var(--background);
+  color: var(--text-color);
+}
+
+body.light table td {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+body.dark table td {
+  background-color: #2e2e2e;
+  color: #ffffff;
+}
+
+/* Light mode table border */
+body.light table {
+  border: 1px solid #ffffff; /* White border in light mode */
+}
+
+/* Dark mode table border */
+body.dark table {
+  border: 1px solid #000000; /* Black border in dark mode */
 }
 
 table th:first-child,
 table td:first-child {
-  border-top-left-radius: 12px; /* Round top-left corner */
+  border-top-left-radius: 12px;
 }
 
 table th:last-child,
 table td:last-child {
-  border-top-right-radius: 12px; /* Round top-right corner */
+  border-top-right-radius: 12px;
 }
 
 table tr:last-child td:first-child {
-  border-bottom-left-radius: 12px; /* Round bottom-left corner */
+  border-bottom-left-radius: 12px;
 }
 
 table tr:last-child td:last-child {
-  border-bottom-right-radius: 12px; /* Round bottom-right corner */
+  border-bottom-right-radius: 12px;
 }
 
-/* Add borders to table cells */
 table th,
 table td {
   padding: 12px;
-  border: 1px solid #ddd; /* Border between each cell */
+  border: 1px solid #ddd;
 }
 
-/* Optional: Add some padding to the body for aesthetics */
-body {
-  background-color: #212830;
-  color: white;
-}
-
-/* Customize the table header */
-table th {
-  background-color: #333;
-  color: #fff;
-  text-align: left;
-  font-weight: bold;
-  font-size: 14px;
-}
-
-table td {
-  background-color: #2a2f37; /* Dark background for table rows */
-  color: white;
-  font-size: 12px;
-}
-
-/* Optional: Add hover effects for rows */
 table tr:hover {
-  background-color: #444; /* Slightly lighter background on hover */
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 table tr:nth-child(even) {
-  background-color: #333; /* Alternate row color for better readability */
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+div {
+  color: var(--text-color);
+}
+
+/* Basic button-like styles */
+.date-picker-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border: 2px solid #4CAF50;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #4CAF50;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  width: auto;
+}
+
+/* Button label styles */
+.date-picker-btn label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+/* Input field style */
+.date-input {
+  padding: 5px;
+  border: none;
+  font-size: 14px;
+  background-color: transparent;
+  color: #333;
+  width: 150px;
+}
+
+/* Hover effect */
+.date-picker-btn:hover {
+  background-color: #4CAF50;
+  color: #fff;
+  border-color: #45a049;
+}
+
+/* Active effect */
+.date-picker-btn:active {
+  background-color: #388e3c;
+  color: #fff;
+  border-color: #2c6d2e;
+}
+
+/* Focus effect for accessibility */
+.date-picker-btn:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.6);
+}
+
+/* Optional: Adding spacing between the buttons */
+.ml-4 {
+  margin-left: 16px;
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  .date-picker-btn {
+    background-color: #333;
+    color: #4CAF50;
+    border: 2px solid #4CAF50;
+  }
+
+  .date-input {
+    color: #fff;
+  }
+
+  .date-picker-btn:hover {
+    background-color: #4CAF50;
+    color: #fff;
+    border-color: #45a049;
+  }
+
+  .date-picker-btn:active {
+    background-color: #388e3c;
+    color: #fff;
+    border-color: #2c6d2e;
+  }
 }

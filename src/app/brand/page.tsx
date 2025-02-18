@@ -1,5 +1,6 @@
 "use client";
 
+import "@/css/brand.css";
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useTheme } from "next-themes";
@@ -11,11 +12,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/app/components/ui/table";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import DateRangePicker from "../components/ui/datePicker";
+import Header from "../components/ui/header";
+import BasicRadialBar from "../components/ui/RadialbarChart";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
-const COLORS = ["#FFFFFF", "#800080"];
 
 type BrandTargetData = {
   Brand: string;
@@ -23,7 +24,6 @@ type BrandTargetData = {
   DailySales: number;
   Target: number;
   TargetAchieved: number;
-  PercentageAchieved?: string;
 };
 
 async function fetchFilteredBrandTargetData(startDate: string, endDate: string) {
@@ -56,10 +56,6 @@ async function fetchUniqueBrandTargetData() {
 }
 
 export default function BrandTargetTables() {
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(today.getDate() - 1);
-
   const [brandTargetData, setBrandTargetData] = useState<BrandTargetData[] | null>(null);
   const [uniqueBrandTargetData, setUniqueBrandTargetData] = useState<BrandTargetData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -82,22 +78,21 @@ export default function BrandTargetTables() {
         try {
           const filteredData = await fetchFilteredBrandTargetData(formattedStartDate, formattedEndDate);
           if (filteredData === null) {
-            setBrandTargetData([]); // No data for the date range
-            setIsDataAvailable(false); // Set flag to false
+            setBrandTargetData([]); 
+            setIsDataAvailable(false); 
           } else {
-            setBrandTargetData(filteredData); // Set the filtered data
-            setIsDataAvailable(true); // Set flag to true
+            setBrandTargetData(filteredData);
+            setIsDataAvailable(true);
           }
         } catch (err) {
           console.error("Error fetching filtered brand target data:", err);
-          setIsDataAvailable(false); // Handle errors gracefully
+          setIsDataAvailable(false);
         } finally {
           setIsLoading(false);
         }
       } else {
-        // No date selected, use the unique data
-        setBrandTargetData(null); // Clear the filtered data
-        setIsDataAvailable(true); // Ensure data is available flag is true
+        setBrandTargetData(null);
+        setIsDataAvailable(true);
         setIsLoading(false);
       }
     }
@@ -106,8 +101,14 @@ export default function BrandTargetTables() {
 
   if (isLoading) return <div>Loading...</div>;
 
+  // Calculate total target and total target achieved
+  const totalTarget = uniqueBrandTargetData.reduce(
+    (acc, brand) => acc + (brand.Target || 0),
+    0
+  );
+  
   const totalTargetAchieved = uniqueBrandTargetData.reduce(
-    (acc, brand) => acc + brand.TargetAchieved,
+    (acc, brand) => acc + (brand.TargetAchieved || 0),
     0
   );
 
@@ -117,133 +118,101 @@ export default function BrandTargetTables() {
 
   const displayData = startDate && endDate ? (brandTargetData || []) : topBrands;
 
-  const BasicRadialBar = ({ percentage }: { percentage: number }) => {
-    const { theme = "light" } = useTheme();
-
-    const series = [Math.round(percentage)];
-
-    const options = {
-      chart: {
-        toolbar: { show: false },
-      },
-      stroke: {
-        curve: "smooth" as "smooth",
-        width: 1,
-      },
-      plotOptions: {
-        radialBar: {
-          hollow: { size: "40%" }, 
-          dataLabels: {
-            value: {
-              fontSize: "0px",
-              fontWeight: 700,
-              color: theme === "dark" ? "#FFF" : "#000",
-            },
-          },
-        },
-      },
-      colors: [theme === "dark" ? "#FFFFFF" : "#800080"], // White and Purple colors
-      labels: [Math.round(percentage).toString()],
-    };
-
-    return (
-      <div className="flex justify-center items-center">
-        <Chart options={options} series={series} type="radialBar" height={100} />
-      </div>
-    );
-  };
-
-  const calculatePercentageAchieved = (target: number, targetAchieved: number) => {
-    return target > 0 ? ((targetAchieved / target) * 100).toFixed(2) : "0.00";
-  };
-
   return (
     <div className="p-5 space-y-8">
-      <div className="mt-4 p-4 bg-gray-100 rounded-lg">
-        <h2 className="text-lg font-bold">
-          Total revenue: INR {totalTargetAchieved.toLocaleString()}
-        </h2>
-      </div>
-
-      <div className="p-5">
-        <h1 className="text-xl font-bold mb-4">Brands</h1>
-        <div className="overflow-x-auto">
-          <Table className="border border-default-300">
-            <TableHeader className="bg-black text-white sticky top-0 z-10">
-              <TableRow className="text-center">
-                <TableHead className="border border-default-300">Brand</TableHead>
-                <TableHead className="border border-default-300">Target</TableHead>
-                <TableHead className="border border-default-300">Target Achieved</TableHead>
-                <TableHead className="border border-default-300">Progress</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody className="overflow-y-auto max-h-96">
-              {uniqueBrandTargetData.map((brand) => {
-                const percentage = brand.Target > 0 ? (brand.TargetAchieved / brand.Target) * 100 : 0;
-                return (
-                  <TableRow key={`${brand.Brand}-${brand.DateTime}`} className="border border-default-300 text-center">
-                    <TableCell className="border border-default-300">{brand.Brand}</TableCell>
-                    <TableCell className="border border-default-300">{brand.Target?.toLocaleString() || '-'}</TableCell>
-                    <TableCell className="border border-default-300">{brand.TargetAchieved?.toLocaleString() || '-'}</TableCell>
-                    <TableCell className="border border-default-300">
-                      {brand.Target > 0 ? calculatePercentageAchieved(brand.Target, brand.TargetAchieved) : "0.00"}%
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+      <Header/>
+      <div className="w-full p-4 rounded-lg">
+        <div className="flex justify-between items-center">
+          <div className="text-white text-4xl font-serif tracking-wider">
+            <h2 className="text-4xl font-light">Agency name</h2>
+          </div>
+          <div className="text-white">
+            <h2 className="text-2xl font-light">Total Accounts: 28</h2>
+            <h2 className="text-2xl font-light">Total Active: 25</h2>
+            <h2 className="text-2xl font-light">
+              Total revenue: INR {totalTargetAchieved.toLocaleString()}
+            </h2>
+          </div>
         </div>
       </div>
 
-      <div className="mt-4">
-        <label>Start Date</label>
-        <DatePicker
-          selected={startDate}
-          onChange={(date) => setStartDate(date)}
-          dateFormat="yyyy-MM-dd HH:mm"
-          showTimeSelect
-          className="ml-2 p-2 border"
-        />
-        <label className="ml-4">End Date</label>
-        <DatePicker
-          selected={endDate}
-          onChange={(date) => setEndDate(date)}
-          dateFormat="yyyy-MM-dd HH:mm"
-          showTimeSelect
-          className="ml-2 p-2 border"
-        />
+      <div className="p-5">
+        <h1 className="text-xl font-bold mb-7 text-center">Brands</h1>
+        <div className="mt-4 flex">
+          <DateRangePicker
+            startDate={startDate}
+            endDate={endDate}
+            setStartDate={setStartDate}
+            setEndDate={setEndDate}
+          />
+        </div>
+
+        {/* Layout for tables and pie chart */}
+        <div className="flex space-x-10 p-6">
+          {/* Brand Table */}
+          <div className="flex-1 overflow-x-auto">
+            <Table className="border border-default-300 text-center">
+              <TableHeader className="bg-black text-white  top-0 z-10">
+                <TableRow>
+                  <TableHead>Brand</TableHead>
+                  <TableHead>Target</TableHead>
+                  <TableHead>Target Achieved</TableHead>
+                  <TableHead>Progress</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {uniqueBrandTargetData.map((brand) => (
+                  <TableRow key={`${brand.Brand}-${brand.DateTime}`}>
+                    <TableCell>{brand.Brand}</TableCell>
+                    <TableCell>{brand.Target?.toLocaleString() || '-'}</TableCell>
+                    <TableCell>{brand.TargetAchieved?.toLocaleString() || '-'}</TableCell>
+                    <TableCell>
+                      {brand.Target > 0
+                        ? ((brand.TargetAchieved / brand.Target) * 100).toFixed(2)
+                        : "0.00"}
+                      %
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          <div className="flex-1 text-center">
+            <BasicRadialBar
+              height={350}
+              series={[Math.round((totalTargetAchieved / totalTarget) * 100)]} 
+            />
+          </div>
+        </div>
       </div>
 
-      <div className="mt-4 p-4 bg-gray-100 rounded-lg">
+      <div className="mt-4 p-4 rounded-lg text-center">
         <h2 className="text-lg font-bold">Top 5 Brands Based on Daily Sales</h2>
       </div>
       <div className="p-5">
-        <Table className="border border-default-300">
+        <Table className="border border-default-300 text-center">
           <TableHeader className="bg-black text-white sticky top-0 z-10">
-            <TableRow className="text-center">
-              <TableHead className="border border-default-300">Brand</TableHead>
-              <TableHead className="border border-default-300">Daily Sales</TableHead>
+            <TableRow>
+              <TableHead>Brand</TableHead>
+              <TableHead>Daily Sales</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody className="overflow-y-auto max-h-96">
-            {displayData.map((brand) => {
-              const percentageAchieved = calculatePercentageAchieved(brand.Target, brand.TargetAchieved);
-              return (
-                <TableRow key={`${brand.Brand}-${brand.DailySales}`} className="border border-default-300 text-center">
-                  <TableCell className="border border-default-300">{brand.Brand}</TableCell>
-                  <TableCell className="border border-default-300">{brand.DailySales?.toLocaleString() || '-'}</TableCell>
-                </TableRow>
-              );
-            })}
+          <TableBody>
+            {displayData.map((brand) => (
+              <TableRow key={`${brand.Brand}-${brand.DailySales}`}>
+                <TableCell>{brand.Brand}</TableCell>
+                <TableCell>{brand.DailySales?.toLocaleString() || '-'}</TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </div>
 
-      {/* Message for No Data Available in Date Range */}
       {!isDataAvailable && startDate && endDate && (
-        <div className="text-gray-500 mt-4">
-          No data available for the selected date range ({startDate.toLocaleDateString()} - {endDate.toLocaleDateString()}).
+        <div className="text-gray-500 mt-4 text-center">
+          No data available for the selected date range (
+          {startDate.toLocaleDateString()} - {endDate.toLocaleDateString()}). 
         </div>
       )}
     </div>
