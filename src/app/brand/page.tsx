@@ -1,5 +1,4 @@
 "use client";
-
 import "@/css/brand.css";
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
@@ -14,7 +13,7 @@ import {
 } from "@/app/components/ui/table";
 import DateRangePicker from "../components/ui/datePicker";
 import Header from "../components/ui/header";
-import BasicRadialBar from "../components/ui/RadialbarChart";
+import BasicRadialBar from "../components/ui/RadialbarChart"; // Updated RadialBar
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
@@ -118,9 +117,20 @@ export default function BrandTargetTables() {
 
   const displayData = startDate && endDate ? (brandTargetData || []) : topBrands;
 
+  // Generate the data for the radial charts
+  const brandProgressData = uniqueBrandTargetData.map((brand) => {
+    const progress = brand.Target > 0 ? (brand.TargetAchieved / brand.Target) * 100 : 0;
+    return Math.round(progress); // Round to the nearest integer for simplicity
+  });
+
+  // For the combined chart: total progress across all brands
+  const combinedProgress = Math.round((totalTargetAchieved / totalTarget) * 100);
+
+  const brandNames = uniqueBrandTargetData.map((brand) => brand.Brand);
+
   return (
     <div className="p-5 space-y-8">
-      <Header/>
+      <Header />
       <div className="w-full p-4 rounded-lg">
         <div className="flex justify-between items-center">
           <div className="text-white text-4xl font-serif tracking-wider">
@@ -146,14 +156,28 @@ export default function BrandTargetTables() {
             setEndDate={setEndDate}
           />
         </div>
-        <div className="flex justify-center items-center">
-            <div className="flex-0.6 text-center">
-              <BasicRadialBar
-                height={350}
-                series={[Math.round((totalTargetAchieved / totalTarget) * 100)]}
-              />
-            </div>
+
+        <div className="flex justify-center items-center space-x-4">
+          {/* Combined Radial Chart */}
+          <div className="flex-0.6 text-center">
+            <BasicRadialBar
+              height={350}
+              series={[combinedProgress]} // Combined progress for all brands
+              combined={true}
+            />
           </div>
+
+          {/* Individual Radial Chart with Multiple Brands */}
+          <div className="flex-0.6 text-center">
+            <h3>Brand Progress</h3>
+            <BasicRadialBar
+              height={350}
+              series={brandProgressData} // Multiple progress for individual brands
+              labels={brandNames} // Add brand names as labels
+            />
+          </div>
+        </div>
+        
         {/* Layout for tables and pie chart */}
         <div className="flex space-x-10 p-6">
           {/* Brand Table */}
@@ -176,48 +200,15 @@ export default function BrandTargetTables() {
                     <TableCell>
                       {brand.Target > 0
                         ? ((brand.TargetAchieved / brand.Target) * 100).toFixed(2)
-                        : "0.00"}
-                      %
+                        : "0.00"}%
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
           </div>
-
-          
-
         </div>
       </div>
-
-      <div className="mt-4 p-4 rounded-lg text-center">
-        <h2 className="text-lg font-bold">Top 5 Brands Based on Daily Sales</h2>
-      </div>
-      <div className="p-5">
-        <Table className="border border-default-300 text-center">
-          <TableHeader className="bg-black text-white sticky top-0 z-10">
-            <TableRow>
-              <TableHead>Brand</TableHead>
-              <TableHead>Daily Sales</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {displayData.map((brand) => (
-              <TableRow key={`${brand.Brand}-${brand.DailySales}`}>
-                <TableCell>{brand.Brand}</TableCell>
-                <TableCell>{brand.DailySales?.toLocaleString() || '-'}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </div>
-
-      {!isDataAvailable && startDate && endDate && (
-        <div className="text-gray-500 mt-4 text-center">
-          No data available for the selected date range (
-          {startDate.toLocaleDateString()} - {endDate.toLocaleDateString()}). 
-        </div>
-      )}
     </div>
   );
 }
